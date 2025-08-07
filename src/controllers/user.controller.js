@@ -24,9 +24,9 @@ export const getById = async (req, res) => {
 
 //Crear usuario
 export const createUser = async (req, res) => {
-    const { title, description, isComplete} = await req.body;
+    const { name, email, password } = await req.body;
     try {
-        const createUser = await User.create(title, description, isComplete);
+        const createUser = await User.create(name, email, password);
         res.status(201).json(createUser);
     } catch (error) {
         res.status(500).json({ message: "Error al crear el usuario"});
@@ -36,9 +36,9 @@ export const createUser = async (req, res) => {
 //Actualizar usuario
 export const updateUser = async (req, res) => {
     const id = req.params.id;
-    const { title, description, isComplete} = await req.body;
+    const { name, email, password} = await req.body;
     try {
-        const updateUser = await User.update({ title, description, isComplete }, { where: {id: id}});
+        const updateUser = await User.update({ name, email, password }, { where: {id: id}});
         if(updateUser) {
             const userUpdated = await User.findByPk(id);
             res.status(200).json(userUpdated);
