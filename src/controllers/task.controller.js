@@ -26,7 +26,7 @@ export const getTaskById = async (req, res) => {
 export const createTask = async (req, res) => {
     const { title, description, isComplete} = await req.body;
     try {
-        const createTask = await Task.create(title, description, isComplete);
+        const createTask = await Task.create({title, description, isComplete});
         res.status(201).json(createTask);
     } catch (error) {
         res.status(500).json({ message: "Error al crear la tarea"});
@@ -52,7 +52,7 @@ export const updateTask = async (req, res) => {
 export const deleteTask = async (req, res) => {
     const id = req.params.id;
     try {
-        const deleteTask = await Task.destroy(id);
+        const deleteTask = await Task.destroy({ where: {id:id}});
         if(deleteTask) {
             res.status(200).json({ message: "tarea eliminada con éxito"});
         };

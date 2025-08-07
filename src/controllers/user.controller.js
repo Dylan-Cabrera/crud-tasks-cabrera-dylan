@@ -25,8 +25,37 @@ export const getUserById = async (req, res) => {
 //Crear usuario
 export const createUser = async (req, res) => {
     const { name, email, password } = await req.body;
+
+    const verifyUniqueEmail = await User.findOne({ where: {email:email} });
+    if(verifyUniqueEmail) {
+        return res.status(400).json({ message: "Ya existe un usuario con ese email"})
+    }
+    
+    const nameLength = await name.length;
+    if(nameLength > 100){
+        return res.status(400).json({ message: "El nombre no puede tener más de 100 carácteres"})
+    };
+    const emailLength = await email.length;
+    if(emailLength > 100){
+        return res.status(400).json({ message: "El email no puede tener más de 100 carácteres"})
+    };
+    const passwordLength = await password.length;
+    if(passwordLength > 100){
+        return res.status(400).json({ message: "La contraseña no puede tener más de 100 carácteres"})
+    };
+
+    if(name.trim() === "") {
+        res.status(400).json({ message: "El nombre no puede estar vacío"});
+    };
+    if(email.trim() === "") {
+        res.status(400).json({ message: "El email no puede estar vacío"});
+    };
+    if(password.trim() === "") {
+        res.status(400).json({ message: "La contraseña no puede estar vacía"});
+    };
+
     try {
-        const createUser = await User.create(name, email, password);
+        const createUser = await User.create({name, email, password});
         res.status(201).json(createUser);
     } catch (error) {
         res.status(500).json({ message: "Error al crear el usuario"});
@@ -37,6 +66,33 @@ export const createUser = async (req, res) => {
 export const updateUser = async (req, res) => {
     const id = req.params.id;
     const { name, email, password} = await req.body;
+    const verifyUniqueEmail = await User.findOne({ where: {email:email} });
+    if(verifyUniqueEmail) {
+        return res.status(400).json({ message: "Ya existe un usuario con ese email"})
+    }
+    
+    const nameLength = await name.length;
+    if(nameLength > 100){
+        return res.status(400).json({ message: "El nombre no puede tener más de 100 carácteres"})
+    };
+    const emailLength = await email.length;
+    if(emailLength > 100){
+        return res.status(400).json({ message: "El email no puede tener más de 100 carácteres"})
+    };
+    const passwordLength = await password.length;
+    if(passwordLength > 100){
+        return res.status(400).json({ message: "La contraseña no puede tener más de 100 carácteres"})
+    };
+
+    if(name.trim() === "") {
+        res.status(400).json({ message: "El nombre no puede estar vacío"});
+    };
+    if(email.trim() === "") {
+        res.status(400).json({ message: "El email no puede estar vacío"});
+    };
+    if(password.trim() === "") {
+        res.status(400).json({ message: "La contraseña no puede estar vacía"});
+    };
     try {
         const updateUser = await User.update({ name, email, password }, { where: {id: id}});
         if(updateUser) {
@@ -52,7 +108,7 @@ export const updateUser = async (req, res) => {
 export const deleteUser = async (req, res) => {
     const id = req.params.id;
     try {
-        const deleteUser = await User.destroy(id);
+        const deleteUser = await User.destroy({where: {id:id}});
         if(deleteUser) {
             res.status(200).json({ message: "Usuario eliminado con éxito"});
         };
