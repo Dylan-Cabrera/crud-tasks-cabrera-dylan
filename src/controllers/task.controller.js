@@ -12,7 +12,7 @@ export const getAllTasks = async (req, res) => {
 };
 
 //Obtener por id
-export const getById = async (req, res) => {
+export const getTaskById = async (req, res) => {
     const id = await req.params.id;
     try {
         const getById = await Task.findByPk(id);
