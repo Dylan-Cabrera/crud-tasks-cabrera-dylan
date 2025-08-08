@@ -62,6 +62,30 @@ export const createTask = async (req, res) => {
 export const updateTask = async (req, res) => {
     const id = req.params.id;
     const { title, description, isComplete} = await req.body;
+    const verifyUniqueTask = await Task.findOne({ where: {title:title} });
+    if(verifyUniqueTask) {
+        return res.status(400).json({ message: "No pueden existir dos tareas con el mismo título"});
+    };
+
+    const titleLength = title.length;
+    const descriptionLength = description.length;
+    if(titleLength > 100) {
+        return res.status(400).json({ message: "El título no puede tener más de 100 carácteres"});
+    };
+    if(descriptionLength > 100) {
+        return res.status(400).json({ message: "La descripción no puede tener más de 100 carácteres"});
+    };
+
+    if(title.trim() === "") {
+        return res.status(400).json({ message: "El título no puede estar vacío"});
+    };
+    if(description.trim() === "") {
+        return res.status(400).json({ message: "La descriopción no pude estar vacía"});
+    };
+
+    if(typeof isComplete != "boolean" ) {
+        return res.status(400).json({ message: "IsComplete solo admite valores booleanos"});
+    };
     try {
         const updateTask = await Task.update({ title, description, isComplete }, { where: {id: id}});
         if(updateTask) {
