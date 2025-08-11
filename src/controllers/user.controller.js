@@ -1,5 +1,6 @@
 import { User } from "../models/user.model.js";
-import { Sequelize, where } from "sequelize";
+import { Sequelize, where, Op } from "sequelize";
+
 
 //Obtener todos los usuarios
 export const getAllUsers = async (req, res) => {
@@ -26,7 +27,8 @@ export const getUserById = async (req, res) => {
 export const createUser = async (req, res) => {
     const { name, email, password } = await req.body;
 
-    const verifyUniqueEmail = await User.findOne({ where: {email:email} });
+    const verifyUniqueEmail = await User.findOne({
+         where: {email:email} });
     if(verifyUniqueEmail) {
         return res.status(400).json({ message: "Ya existe un usuario con ese email"})
     }
@@ -66,7 +68,7 @@ export const createUser = async (req, res) => {
 export const updateUser = async (req, res) => {
     const id = req.params.id;
     const { name, email, password} = await req.body;
-    const verifyUniqueEmail = await User.findOne({ where: {email:email} });
+    const verifyUniqueEmail = await User.findOne({ where: {email:email, id: {[Op.ne]: id}} });
     if(verifyUniqueEmail) {
         return res.status(400).json({ message: "Ya existe un usuario con ese email"})
     }

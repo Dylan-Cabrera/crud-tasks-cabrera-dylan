@@ -1,5 +1,5 @@
 import { Task } from "../models/task.model.js";
-import { Sequelize, where } from "sequelize";
+import { Sequelize, where,Op } from "sequelize";
 
 //Obtener todas las tareas
 export const getAllTasks = async (req, res) => {
@@ -62,7 +62,7 @@ export const createTask = async (req, res) => {
 export const updateTask = async (req, res) => {
     const id = req.params.id;
     const { title, description, isComplete} = await req.body;
-    const verifyUniqueTask = await Task.findOne({ where: {title:title} });
+    const verifyUniqueTask = await Task.findOne({ where: {title:title, id: {[Op.ne]: id}} });
     if(verifyUniqueTask) {
         return res.status(400).json({ message: "No pueden existir dos tareas con el mismo título"});
     };
