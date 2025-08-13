@@ -1,11 +1,11 @@
-import { User } from "../models/user.model.js";
+import { UserModel } from "../models/user.model.js";
 import { Sequelize, where, Op } from "sequelize";
 
 
 //Obtener todos los usuarios
 export const getAllUsers = async (req, res) => {
     try {
-        const getAllUsers = await User.findAll();
+        const getAllUsers = await UserModel.findAll();
         res.status(200).json(getAllUsers);
     } catch (error) {
         res.status(500).json({ message: "Error al obtener los usuarios"});
@@ -16,7 +16,7 @@ export const getAllUsers = async (req, res) => {
 export const getUserById = async (req, res) => {
     const id = await req.params.id;
     try {
-        const getById = await User.findByPk(id);
+        const getById = await UserModel.findByPk(id);
         res.status(200).json(getById);
     } catch (error) {
         res.status(500).json({ message: "Error al obtener el id"});
@@ -27,7 +27,7 @@ export const getUserById = async (req, res) => {
 export const createUser = async (req, res) => {
     const { name, email, password } = await req.body;
 
-    const verifyUniqueEmail = await User.findOne({
+    const verifyUniqueEmail = await UserModel.findOne({
          where: {email:email} });
     if(verifyUniqueEmail) {
         return res.status(400).json({ message: "Ya existe un usuario con ese email"})
@@ -68,7 +68,7 @@ export const createUser = async (req, res) => {
 export const updateUser = async (req, res) => {
     const id = req.params.id;
     const { name, email, password} = await req.body;
-    const verifyUniqueEmail = await User.findOne({ where: {email:email, id: {[Op.ne]: id}} });
+    const verifyUniqueEmail = await UserModel.findOne({ where: {email:email, id: {[Op.ne]: id}} });
     if(verifyUniqueEmail) {
         return res.status(400).json({ message: "Ya existe un usuario con ese email"})
     }
@@ -96,7 +96,7 @@ export const updateUser = async (req, res) => {
         res.status(400).json({ message: "La contraseña no puede estar vacía"});
     };
     try {
-        const updateUser = await User.update({ name, email, password }, { where: {id: id}});
+        const updateUser = await UserModel.update({ name, email, password }, { where: {id: id}});
         if(updateUser) {
             const userUpdated = await User.findByPk(id);
             res.status(200).json(userUpdated);
@@ -110,7 +110,7 @@ export const updateUser = async (req, res) => {
 export const deleteUser = async (req, res) => {
     const id = req.params.id;
     try {
-        const deleteUser = await User.destroy({where: {id:id}});
+        const deleteUser = await UserModel.destroy({where: {id:id}});
         if(deleteUser) {
             res.status(200).json({ message: "Usuario eliminado con éxito"});
         };
