@@ -1,11 +1,20 @@
 import { TaskModel } from "../models/task.model.js";
-import { Sequelize, where,Op } from "sequelize";
+import { Sequelize, where,Op, Model } from "sequelize";
 import { UserModel } from "../models/user.model.js";
 
 //Obtener todas las tareas
 export const getAllTasks = async (req, res) => {
     try {
-        const getAllTasks = await TaskModel.findAll();
+        const getAllTasks = await TaskModel.findAll({
+            attributes:{
+                exclude: ['user_id']
+            },
+            include: {
+                model: UserModel,
+                as: 'user',
+                attributes: ['name', 'email']
+            }
+        });
         res.status(200).json(getAllTasks);
     } catch (error) {
         res.status(500).json({ message: "Error al obtener las tareas", error});
@@ -16,7 +25,16 @@ export const getAllTasks = async (req, res) => {
 export const getTaskById = async (req, res) => {
     const id = await req.params.id;
     try {
-        const getById = await TaskModel.findByPk(id);
+        const getById = await TaskModel.findByPk(id, {
+            attributes: {
+                exclude: ['user_id']
+            },
+            include: {
+                model: UserModel,
+                as: 'user',
+                attributes: ['name', 'email']
+            }
+        });
         res.status(200).json(getById);
     } catch (error) {
         res.status(500).json({ message: "Error al obtener el id"});
