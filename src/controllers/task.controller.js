@@ -1,5 +1,6 @@
 import { TaskModel } from "../models/task.model.js";
 import { Sequelize, where,Op } from "sequelize";
+import { UserModel } from "../models/user.model.js";
 
 //Obtener todas las tareas
 export const getAllTasks = async (req, res) => {
@@ -7,7 +8,7 @@ export const getAllTasks = async (req, res) => {
         const getAllTasks = await TaskModel.findAll();
         res.status(200).json(getAllTasks);
     } catch (error) {
-        res.status(500).json({ message: "Error al obtener las tareas"});
+        res.status(500).json({ message: "Error al obtener las tareas", error});
     }
 };
 
@@ -24,7 +25,18 @@ export const getTaskById = async (req, res) => {
 
 //Crear tarea
 export const createTask = async (req, res) => {
-    const { title, description, is_complete} = await req.body;
+    const { title, description, is_complete, user_id} = await req.body;
+
+    
+    if(!user_id) {
+        return res.status(400).json({ message: "No se pueden crear tareas sin usuario"});
+    };
+
+    const  searchUser = await UserModel.findByPk(user_id);
+    if (!searchUser) {
+        return res.status(404).json({ message: "No existe un usuario con ese id"});
+    };
+
     const verifyUniqueTask = await TaskModel.findOne({ where: {title:title} });
     if(verifyUniqueTask) {
         return res.status(400).json({ message: "No pueden existir dos tareas con el mismo título"});
@@ -51,20 +63,22 @@ export const createTask = async (req, res) => {
     };
 
     try {
-        const createTask = await TaskModel.create({title, description, is_complete});
+        const createTask = await TaskModel.create({title, description, is_complete, user_id});
         res.status(201).json(createTask);
     } catch (error) {
-        res.status(500).json({ message: "Error al crear la tarea"});
+        res.status(500).json({ message: "Error al crear la tarea", error});
     }
 };
 
 //Actualizar tarea
 export const updateTask = async (req, res) => {
     const id = req.params.id;
-    const { title, description, is_complete} = await req.body;
-    const verifyUniqueTask = await TaskModel.findOne({ where: {title:title, id: {[Op.ne]: id}} });
+    const { title, description, is_complete, user_id} = await req.body;
+
+    //busca si el usuario ya tiene una tarea con ese titulo
+    const verifyUniqueTask = await TaskModel.findOne({ where: {title:title, id: {[Op.eq]: id}} });
     if(verifyUniqueTask) {
-        return res.status(400).json({ message: "No pueden existir dos tareas con el mismo título"});
+        return res.status(400).json({ message: "Un usuario no puede tener dos tareas con el mismo título"});
     };
 
     const titleLength = title.length;
@@ -87,7 +101,7 @@ export const updateTask = async (req, res) => {
         return res.status(400).json({ message: "is_complete solo admite valores booleanos"});
     };
     try {
-        const updateTask = await TaskModel.update({ title, description, is_complete }, { where: {id: id}});
+        const updateTask = await TaskModel.update({ title, description, is_complete, user_id}, { where: {id: id}});
         if(updateTask) {
             const TaskUpdated = await Task.findByPk(id);
             res.status(200).json(TaskUpdated);
