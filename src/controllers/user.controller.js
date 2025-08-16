@@ -1,3 +1,4 @@
+import { TaskModel } from "../models/task.model.js";
 import { UserModel } from "../models/user.model.js";
 import { Sequelize, where, Op } from "sequelize";
 
@@ -5,7 +6,18 @@ import { Sequelize, where, Op } from "sequelize";
 //Obtener todos los usuarios
 export const getAllUsers = async (req, res) => {
     try {
-        const getAllUsers = await UserModel.findAll();
+        const getAllUsers = await UserModel.findAll({
+            attributes: {
+                exclude: ['password']
+            },
+            include: {
+                model: TaskModel,
+                as: 'tasks',
+                attributes: {
+                    exclude: ['id', 'user_id']
+                }
+        }
+        });
         res.status(200).json(getAllUsers);
     } catch (error) {
         res.status(500).json({ message: "Error al obtener los usuarios"});
@@ -16,7 +28,18 @@ export const getAllUsers = async (req, res) => {
 export const getUserById = async (req, res) => {
     const id = await req.params.id;
     try {
-        const getById = await UserModel.findByPk(id);
+        const getById = await UserModel.findByPk(id, {
+            attributes: {
+                exclude: ['password']
+            },
+            include: {
+                model: TaskModel,
+                as: 'tasks',
+                attributes: {
+                    exclude: ['id', 'user_id']
+                }
+            }
+        });
         res.status(200).json(getById);
     } catch (error) {
         res.status(500).json({ message: "Error al obtener el id"});
@@ -110,10 +133,14 @@ export const updateUser = async (req, res) => {
 export const deleteUser = async (req, res) => {
     const id = req.params.id;
     try {
-        const deleteUser = await UserModel.destroy({where: {id:id}});
-        if(deleteUser) {
-            res.status(200).json({ message: "Usuario eliminado con éxito"});
-        };
+        const verifyExistence = await UserModel.findByPk(id);
+                if(verifyExistence) {
+                    const deleteUser = await UserModel.destroy({ where: {id:id}});
+                    return res.status(200).json({ message: "tarea eliminada con éxito"});
+                    
+                } else {
+                    res.status(404).json({ message: 'No existe una tarea con ese id'})
+                }
     } catch (error) {
         res.status(500).json({ message: "Error al eliminar el usuario"});
     }

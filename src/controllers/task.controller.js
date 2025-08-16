@@ -133,10 +133,15 @@ export const updateTask = async (req, res) => {
 export const deleteTask = async (req, res) => {
     const id = req.params.id;
     try {
-        const deleteTask = await TaskModel.destroy({ where: {id:id}});
-        if(deleteTask) {
-            res.status(200).json({ message: "tarea eliminada con éxito"});
-        };
+        const verifyExistence = await TaskModel.findByPk(id);
+        if(verifyExistence) {
+            const deleteTask = await TaskModel.destroy({ where: {id:id}});
+            return res.status(200).json({ message: "tarea eliminada con éxito"});
+            
+        } else {
+            res.status(404).json({ message: 'No existe una tarea con ese id'})
+        }
+
     } catch (error) {
         res.status(500).json({ message: "Error al eliminar la tarea"});
     }
