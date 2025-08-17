@@ -3,6 +3,10 @@ import dotenv from "dotenv";
 import { StartDB } from "./src/config/db.js";
 import userRouter from "./src/routers/user.router.js";
 import taskRouter from "./src/routers/task.router.js";
+import './src/models/profile.model.js'
+import './src/models/tag.model.js'
+import './src/models/task_tag.model.js'
+
 
 StartDB();
 const app = express();
