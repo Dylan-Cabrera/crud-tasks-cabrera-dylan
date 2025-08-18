@@ -3,9 +3,10 @@ import { TagModel } from "../models/tag.model.js";
 import { TaskModel } from "../models/task.model.js";
 import { UserModel } from "../models/user.model.js";
 
+
 export const getAllProfiles = async (req,res) => {
     try {
-        const getAllProfiles = await ProfileModel.findAll({
+        const profiles = await ProfileModel.findAll({
             attributes:{
                 exclude: ['user_id']
             },
@@ -35,7 +36,7 @@ export const getAllProfiles = async (req,res) => {
             ]
         });
 
-        res.status(200).json(getAllProfiles);
+        res.status(200).json(profiles);
     } catch (error) {
         res.status(500).json({ message: 'Error al obtener todos los perfiles', error})
     }

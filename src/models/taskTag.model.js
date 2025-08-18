@@ -3,8 +3,8 @@ import { DataTypes } from "sequelize";
 import { TaskModel } from "./task.model.js";
 import { TagModel } from "./tag.model.js";
 
-export const task_tag = sequelize.define(
-    'task_tag', {
+export const TaskTagModel = sequelize.define(
+    'task_tags', {
         'id': {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -18,14 +18,14 @@ export const task_tag = sequelize.define(
 
 //relación muchos a muchos
 
-TaskModel.belongsToMany(TagModel, {
-    through: task_tag,
+TaskModel.belongsToMany(TaskModel, {
+    through: TaskTagModel,
     foreignKey: 'task_id',
-    as: 'tag'
+    as: 'tasks'
 });
 
-TagModel.belongsToMany(TaskModel, {
-    through: task_tag,
+TagModel.belongsToMany(TagModel, {
+    through: TaskTagModel,
     foreignKey: 'tag_id',
-    as: 'tasks'
+    as: 'tag'
 });

@@ -5,9 +5,10 @@ import userRoutes from "./src/routes/user.routes.js";
 import taskRoutes from "./src/routes/task.routes.js";
 import tagRouter from "./src/routes/tag.routes.js";
 import profileRouter from "./src/routes/profile.routes.js";
+import tasksTagsRoutes from "./src/routes/taskTag.routes.js";
 import './src/models/profile.model.js';
 import './src/models/tag.model.js';
-import './src/models/task_tag.model.js';
+import './src/models/taskTag.model.js';
 
 
 StartDB();
@@ -20,6 +21,7 @@ app.use("/api", userRoutes);
 app.use("/api", taskRoutes);
 app.use("/api", tagRouter);
 app.use("/api", profileRouter);
+app.use("/api", tasksTagsRoutes);
 
 app.listen(PORT || 3000, () => {
     console.log(`escuchando servidor en el puerto ${PORT}`);

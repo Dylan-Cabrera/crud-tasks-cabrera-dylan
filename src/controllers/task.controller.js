@@ -5,7 +5,7 @@ import { UserModel } from "../models/user.model.js";
 //Obtener todas las tareas
 export const getAllTasks = async (req, res) => {
     try {
-        const getAllTasks = await TaskModel.findAll({
+        const tasks = await TaskModel.findAll({
             attributes:{
                 exclude: ['user_id']
             },
@@ -15,7 +15,7 @@ export const getAllTasks = async (req, res) => {
                 attributes: ['name', 'email']
             }
         });
-        res.status(200).json(getAllTasks);
+        res.status(200).json(tasks);
     } catch (error) {
         res.status(500).json({ message: "Error al obtener las tareas", error});
     }
@@ -25,7 +25,7 @@ export const getAllTasks = async (req, res) => {
 export const getTaskById = async (req, res) => {
     const id = await req.params.id;
     try {
-        const getById = await TaskModel.findByPk(id, {
+        const task = await TaskModel.findByPk(id, {
             attributes: {
                 exclude: ['user_id']
             },
@@ -35,7 +35,7 @@ export const getTaskById = async (req, res) => {
                 attributes: ['name', 'email']
             }
         });
-        res.status(200).json(getById);
+        res.status(200).json(task);
     } catch (error) {
         res.status(500).json({ message: "Error al obtener el id"});
     }

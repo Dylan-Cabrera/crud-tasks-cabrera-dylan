@@ -7,7 +7,7 @@ import { UserModel } from "../models/user.model.js";
 
 export const getAllTags = async (req,res) => {
     try {
-        const getAllTags = await TagModel.findAll({
+        const tags = await TagModel.findAll({
             include: [{
                 model: TaskModel,
                 attributes: {
@@ -36,7 +36,7 @@ export const getAllTags = async (req,res) => {
                 ]
             }]
         })
-        res.status(200).json(getAllTags);
+        res.status(200).json(tags);
     } catch (error) {
         res.status(500).json({ message: "Error al obtener las etiquetas", error})
     }

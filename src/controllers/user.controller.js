@@ -6,7 +6,7 @@ import { Sequelize, where, Op } from "sequelize";
 //Obtener todos los usuarios
 export const getAllUsers = async (req, res) => {
     try {
-        const getAllUsers = await UserModel.findAll({
+        const users = await UserModel.findAll({
             attributes: {
                 exclude: ['password']
             },
@@ -18,7 +18,7 @@ export const getAllUsers = async (req, res) => {
                 }
         }
         });
-        res.status(200).json(getAllUsers);
+        res.status(200).json(users);
     } catch (error) {
         res.status(500).json({ message: "Error al obtener los usuarios"});
     }
@@ -28,7 +28,7 @@ export const getAllUsers = async (req, res) => {
 export const getUserById = async (req, res) => {
     const id = await req.params.id;
     try {
-        const getById = await UserModel.findByPk(id, {
+        const user = await UserModel.findByPk(id, {
             attributes: {
                 exclude: ['password']
             },
@@ -40,7 +40,7 @@ export const getUserById = async (req, res) => {
                 }
             }
         });
-        res.status(200).json(getById);
+        res.status(200).json(user);
     } catch (error) {
         res.status(500).json({ message: "Error al obtener el id"});
     }

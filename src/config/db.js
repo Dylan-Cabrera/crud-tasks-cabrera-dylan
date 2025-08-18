@@ -4,7 +4,7 @@ export const StartDB = async () => {
     try {
         sequelize.authenticate();
         console.log("Se conecto a la base de datos")
-        sequelize.sync();
+        sequelize.sync({force: true});
     } catch (error) {
         console.log("Error al conectar con la base de datos")
         process.exit(1);
