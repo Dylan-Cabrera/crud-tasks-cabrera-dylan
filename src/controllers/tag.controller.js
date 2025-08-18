@@ -44,8 +44,12 @@ export const getAllTags = async (req,res) => {
 
 //añadir una nueva etiqueta
 export const createTag = async (req,res) => {
+    const {name, color} = req.body;
     try {
-        
+        const createTag = await TagModel.create({name,color});
+        if(createTag) {
+            res.status(201).json(createTag)
+        };
     } catch (error) {
         res.status(500).json({ message: "Error al crear etiqueta", error})
     }
