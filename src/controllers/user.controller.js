@@ -80,10 +80,10 @@ export const createUser = async (req, res) => {
     };
 
     try {
-        const createUser = await User.create({name, email, password});
+        const createUser = await UserModel.create({name, email, password});
         res.status(201).json(createUser);
     } catch (error) {
-        res.status(500).json({ message: "Error al crear el usuario"});
+        res.status(500).json({ message: "Error al crear el usuario", error});
     }
 };
 
@@ -121,7 +121,7 @@ export const updateUser = async (req, res) => {
     try {
         const updateUser = await UserModel.update({ name, email, password }, { where: {id: id}});
         if(updateUser) {
-            const userUpdated = await User.findByPk(id);
+            const userUpdated = await UserModel.findByPk(id);
             res.status(200).json(userUpdated);
         };
     } catch (error) {
