@@ -13,11 +13,13 @@ export const getAllTasksTags = async (req,res) => {
             include: [
                 {
                     model: TaskModel,
-                    as: 'tasks'
+                    as: 'tasks',
+                    attributes: ['title', 'description', 'is_complete']
                 },
                 {
                     model: TagModel,
-                    as: 'tag'
+                    as: 'tags',
+                    attributes: ['name', 'color']
                 }
             ]
            
