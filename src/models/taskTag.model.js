@@ -21,21 +21,25 @@ export const TaskTagModel = sequelize.define(
 TaskModel.belongsToMany(TagModel, {
     through: TaskTagModel,
     foreignKey: 'task_id',
-    as: 'tasks'
+    as: 'tags',
+    onDelete: "CASCADE"
 });
 
 TagModel.belongsToMany(TaskModel, {
     through: TaskTagModel,
     foreignKey: 'tag_id',
-    as: 'tag'
+    as: 'tasks',
+    onDelete: "CASCADE"
 });
 
 TaskTagModel.belongsTo(TaskModel, {
     foreignKey: 'task_id',
-    as: 'tasks'
+    as: 'tasks',
+    onDelete: "CASCADE"
 });
 
 TaskTagModel.belongsTo(TagModel, {
     foreignKey: 'tag_id',
-    as: 'tags'
+    as: 'tags',
+    onDelete: "CASCADE"
 });
