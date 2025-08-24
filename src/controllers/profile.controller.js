@@ -70,9 +70,13 @@ export const updateProfile = async (req,res) => {
         const updateProfile = await ProfileModel.update(req.body, {where: {
             id: req.params.id
         }});
-        res.status(200).json({ message: "Perfil actualizado con exito"})
+        if(updateProfile) {
+            const profile = await ProfileModel.findByPk(req.params.id);
+            res.status(200).json(profile, { message: "Perfil actualizado con exito"})
+        }
     } catch (error) {
-        res.status(500).json({ message: '', error})
+        res.status(500).json({ message: 'Error al actualizar el perfil', error})
+        console.error(error)
     }
 };
 
