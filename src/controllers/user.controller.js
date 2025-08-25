@@ -60,20 +60,28 @@ export const updateUser = async (req, res) => {
     try {
         const updateUser = await UserModel.update(req.body, { where: {id: req.params.id}});
         if(updateUser) {
-            const userUpdated = await UserModel.findByPk(id);
+            const userUpdated = await UserModel.findByPk(req.params.id);
             res.status(200).json(userUpdated);
         };
     } catch (error) {
-        res.status(500).json({ message: "Error al actualizar el usuario"});
+        res.status(500).json({ message: "Error al actualizar el usuario"}, error);
+        console.error(error)
     }
 };
 
 //Eliminar usuario
 export const deleteUser = async (req, res) => {
     try {
-        const deleteUser = await UserModel.destroy({ where: {id:req.params.id}});
-        return res.status(200).json({ message: "tarea eliminada con éxito"});
+        
+        const user = await UserModel.findByPk(req.params.id);
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+        await user.destroy();
+        return res.status(200).json({ message: "Usuario eliminado con éxito"});
+
     } catch (error) {
+        console.log(error)
         res.status(500).json({ message: "Error al eliminar el usuario"});
     }
 };

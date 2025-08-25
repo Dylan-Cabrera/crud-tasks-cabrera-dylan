@@ -1,6 +1,7 @@
 //un usuario solo puede tener un perfil y un perfil solo puede tener un usuario
 import { sequelize } from "../config/database.js";
 import { DataTypes } from "sequelize";
+import { UserModel } from "./user.model.js";
 
 export const ProfileModel = sequelize.define(
     'Profile', {
@@ -18,6 +19,9 @@ export const ProfileModel = sequelize.define(
         }
     } ,
     {
-        timestamps: false
+        paranoid: true //eliminación lógica, agrega un delete at
     }
 );
+
+
+
