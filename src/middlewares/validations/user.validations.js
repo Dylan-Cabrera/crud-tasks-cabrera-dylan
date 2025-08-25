@@ -29,7 +29,8 @@ export const createUserValidation = [
             throw new Error('Ya existe un usuario con ese email')
         }
     }),
-    body("is_complete").isBoolean().withMessage('is_complete solo admite valores booleanos')
+    body("password").notEmpty().withMessage('La constraseña no puede estar vacía')
+    .isLength({min: 3, max: 100}).withMessage('La contraseña debe tener entre 8 y 100 caracteres')
 ];
 
 export const updateUserValidation = [
@@ -56,7 +57,8 @@ export const updateUserValidation = [
         }
     })
     .optional(),
-    body("is_complete").isBoolean().withMessage('is_complete solo admite valores booleanos')
+   body("password").notEmpty().withMessage('La constraseña no puede estar vacía')
+    .isLength({min: 3, max: 100}).withMessage('La contraseña debe tener entre 8 y 100 caracteres')
     .optional()
 
 ];
