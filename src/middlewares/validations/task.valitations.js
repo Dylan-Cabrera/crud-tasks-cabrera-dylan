@@ -5,8 +5,8 @@ export const getTaskByPkValidations = [
     param('id')
         .isInt().withMessage('El id debe ser un entero') //msg si no es entero
         .custom(async (value)=> {
-            const user = UserModel.findByPk(value);
-            if(!user) {
+            const task = TaskModelModel.findByPk(value);
+            if(!task) {
                 throw new Error('No existe una tarea con ese id')
             }
         })
