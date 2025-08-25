@@ -41,7 +41,7 @@ UserModel.hasOne(ProfileModel, {
 });
 
 
-//no funca ;-;
+
 UserModel.addHook("afterDestroy", async (user, options) => {
     
     try {

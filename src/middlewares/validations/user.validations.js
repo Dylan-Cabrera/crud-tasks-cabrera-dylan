@@ -1,6 +1,6 @@
-import { param,body } from "express-validator"
 import { UserModel } from "../../models/user.model.js"
 import { Op } from "sequelize";
+import { param,body } from "express-validator"
 
 export const getUserByPkValidations = [
     param('id')
@@ -48,7 +48,7 @@ export const updateUserValidation = [
     body("email").notEmpty().withMessage('El email no puede estar vacío')
     .isLength({min: 3, max: 100}).withMessage('El email debe tener máximo 100 caracteres')
     .isEmail().withMessage('Email invalido')
-    .custom( async (value) => {
+    .custom( async (value, {req}) => {
         const user = UserModel.findOne({
             where: {email: value, id: { [Op.ne]: req.params.id}}
         });
